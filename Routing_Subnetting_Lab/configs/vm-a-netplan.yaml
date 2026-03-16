@@ -1,0 +1,31 @@
+# /etc/netplan/01-lab-config.yaml — VM-A (Router)
+# This file configures VM-A with interfaces on both subnets.
+# VM-A acts as the router between 192.168.10.0/24 and 192.168.20.0/24.
+#
+# Apply with: sudo netplan apply
+# Test with:  sudo netplan try (auto-reverts after 120s if not confirmed)
+
+network:
+  version: 2
+  renderer: networkd        # Ubuntu Server 24.04 uses systemd-networkd by default
+  ethernets:
+
+    # NAT adapter — internet access for package installs
+    # DHCP is fine here; we don't need a static IP for internet access
+    enp0s3:
+      dhcp4: true
+
+    # Internal Network: Subnet 10
+    # This is VM-A's "home" subnet
+    enp0s8:
+      addresses:
+        - 192.168.10.10/24
+      # No gateway here — VM-A IS the router for this subnet
+
+    # Internal Network: Subnet 20
+    # This is VM-A's interface on the "other" subnet
+    # It serves as the gateway for VM-B
+    enp0s9:
+      addresses:
+        - 192.168.20.1/24
+      # No gateway here either — VM-A routes between both subnets directly

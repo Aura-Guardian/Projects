@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  DC Promotion Unattended Answer File (Sanitized)
+  ================================================
+  This file can be used with Install-ADDSForest to automate DC promotion.
+  It mirrors the settings used in the walkthrough.
+
+  USAGE:
+    Import-Module ADDSDeployment
+    Install-ADDSForest -CreateDnsDelegation:$false `
+        -DatabasePath "C:\Windows\NTDS" `
+        -DomainMode "WinThreshold" `
+        -DomainName "azengineers.com" `
+        -DomainNetbiosName "AZENGINEERS" `
+        -ForestMode "WinThreshold" `
+        -InstallDns:$true `
+        -LogPath "C:\Windows\NTDS" `
+        -SysvolPath "C:\Windows\SYSVOL" `
+        -Force:$true
+
+  NOTE: The SafeModeAdministratorPassword is NOT stored here for security.
+        You will be prompted for it at runtime, or pass it via:
+        -SafeModeAdministratorPassword (Read-Host -AsSecureString "DSRM Password")
+
+  PATHS EXPLAINED:
+    DatabasePath  = Where NTDS.dit (the AD database) is stored.
+    LogPath       = Where the transaction logs (edb.log) are stored.
+                    In production, put this on a separate physical disk for performance.
+    SysvolPath    = Where Group Policy templates and NETLOGON scripts replicate.
+-->
+
+<!--
+  The XML below is the Server Manager "Export Settings" format generated
+  after walking through the AD DS Configuration Wizard. It is provided for
+  reference if you prefer the GUI workflow and want to replicate it.
+-->
+<DCPromoSettings>
+  <DomainName>azengineers.com</DomainName>
+  <DomainNetbiosName>AZENGINEERS</DomainNetbiosName>
+  <ForestFunctionalLevel>WinThreshold</ForestFunctionalLevel>
+  <DomainFunctionalLevel>WinThreshold</DomainFunctionalLevel>
+  <InstallDNS>true</InstallDNS>
+  <CreateDNSDelegation>false</CreateDNSDelegation>
+  <DatabasePath>C:\Windows\NTDS</DatabasePath>
+  <LogPath>C:\Windows\NTDS</LogPath>
+  <SYSVOLPath>C:\Windows\SYSVOL</SYSVOLPath>
+  <!-- SafeModeAdministratorPassword intentionally omitted — never store in plaintext -->
+  <RebootOnCompletion>true</RebootOnCompletion>
+</DCPromoSettings>

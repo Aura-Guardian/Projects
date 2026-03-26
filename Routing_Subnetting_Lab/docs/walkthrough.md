@@ -180,14 +180,14 @@ For two subnets to communicate, something needs to sit between them and forward 
 **Option A:** Use a third VM as a dedicated router (cleaner conceptually).
 **Option B:** Give VM-A a second internal interface on subnet 20 and make it act as the router (fewer VMs to manage).
 
-This walkthrough uses **Option B** for simplicity. If you prefer Option A, create a third VM with two Internal Network adapters (one on `intnet-subnet10`, one on `intnet-subnet20`).
+This walkthrough uses **Option B** for simplicity. If you prefer Option A, create a third VM with two Internal Network adapters (one on `vmnet2`, one on `vmnet3`).
 
 ### 4a. Add a Second Internal Interface to VM-A
 
 In VirtualBox (VM must be powered off):
 
 1. VM-A → Settings → Network
-2. **Adapter 3:** Enable → Attached to: Internal Network → Name: `intnet-subnet20`
+2. **Adapter 3:** Enable → Attached to: Internal Network → Name: `vmnet3`
 3. Boot VM-A.
 
 ### 4b. Assign an IP on the Subnet-20 Side

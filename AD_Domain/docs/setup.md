@@ -45,16 +45,19 @@ You need a machine capable of running two VMs simultaneously:
 
 **Post-install — Static IP Configuration (do this before promoting to DC):**
 
+
 ```powershell
+# Check adapter details
+Get-NetAdapter
+
 # Set a static IP on the Internal adapter
-New-NetIPAddress -InterfaceAlias "Ethernet" `
-    -IPAddress 192.168.10.10 `
-    -PrefixLength 24 `
-    -DefaultGateway 192.168.10.1
+New-NetIPAddress -InterfaceAlias "Ethernet0" -IPAddress 192.168.10.10 -PrefixLength 24 -DefaultGateway 192.168.10.1
 
 # Point DNS to itself (required for AD DS)
-Set-DnsClientServerAddress -InterfaceAlias "Ethernet" `
-    -ServerAddresses 127.0.0.1
+Set-DnsClientServerAddress -InterfaceAlias "Ethernet0" -ServerAddresses 127.0.0.1
+
+# Verify static IP
+ipconfig /all
 ```
 
 ### VM 2 — Client Machine (CLIENT01)
@@ -72,15 +75,17 @@ Set-DnsClientServerAddress -InterfaceAlias "Ethernet" `
 **Post-install — Network Configuration:**
 
 ```powershell
+# Check adapter details
+Get-NetAdapter
+
 # Static IP on the same subnet as DC01
-New-NetIPAddress -InterfaceAlias "Ethernet" `
-    -IPAddress 192.168.10.20 `
-    -PrefixLength 24 `
-    -DefaultGateway 192.168.10.1
+New-NetIPAddress -InterfaceAlias "Ethernet0" -IPAddress 192.168.10.20 -PrefixLength 24 -DefaultGateway 192.168.10.1
 
 # CRITICAL: DNS must point to the DC, NOT a public resolver
-Set-DnsClientServerAddress -InterfaceAlias "Ethernet" `
-    -ServerAddresses 192.168.10.10
+Set-DnsClientServerAddress -InterfaceAlias "Ethernet0" -ServerAddresses 192.168.10.10
+
+# Verify static IP
+ipconfig /all
 ```
 
 ---
@@ -152,4 +157,3 @@ In a lab environment, you can temporarily disable the firewall on the internal N
 Set-NetFirewallProfile -Profile Domain,Private -Enabled False
 ```
 
-> **Note:** Never do this in production. This is lab-only.

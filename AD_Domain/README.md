@@ -109,7 +109,7 @@ ad-domain-build-and-migration/
 │   ├── 07-migrate-profile.ps1     # Copy local profile data to D:\
 │   └── 08-verify-health.ps1       # dcdiag + repadmin validation
 └── screenshots/
-    └── .gitkeep                   # Placeholder — add your own evidence
+    └── .gitkeep                   # Placeholder
 ```
 
 ---

@@ -2,7 +2,7 @@
 <#
 .SYNOPSIS
     Creates security groups, user accounts, and a delegated domain join account
-    for the azengineers.com domain.
+    for the domain.com domain.
 
 .DESCRIPTION
     This script populates the OU structure (created by 02-create-ous.ps1) with:
@@ -75,7 +75,7 @@ Write-Host "`n── Creating Helpdesk Account ──`n" -ForegroundColor Cyan
 
 New-ADUserSafe -Name "Alice Helpdesk" `
     -SamAccountName "alice.helpdesk" `
-    -UPN "alice.helpdesk@azengineers.com" `
+    -UPN "alice.helpdesk@domain.com" `
     -Path "OU=Tier 2 - Helpdesk,OU=_Admin,$domainDN" `
     -Password $defaultPassword
 
@@ -86,7 +86,7 @@ Write-Host "`n── Creating Domain Join Service Account ──`n" -ForegroundC
 
 New-ADUserSafe -Name "SVC Domain Join" `
     -SamAccountName "svc.domainjoin" `
-    -UPN "svc.domainjoin@azengineers.com" `
+    -UPN "svc.domainjoin@domain.com" `
     -Path "OU=_ServiceAccounts,$domainDN" `
     -Password $defaultPassword
 
@@ -109,7 +109,7 @@ foreach ($u in $users) {
     $path = "OU=Users,OU=$($u.Dept),$domainDN"
     New-ADUserSafe -Name $u.Name `
         -SamAccountName $u.Sam `
-        -UPN "$($u.Sam)@azengineers.com" `
+        -UPN "$($u.Sam)@domain.com" `
         -Path $path `
         -Password $defaultPassword
 

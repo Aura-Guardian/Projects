@@ -1,7 +1,7 @@
 <#
 .SYNOPSIS
     Runs pre-migration checks on a client machine before joining it to
-    azengineers.com.
+    domain.com.
 
 .DESCRIPTION
     This script verifies five prerequisites on the end-user machine:
@@ -18,7 +18,7 @@
     IP address of the Domain Controller. Default: 192.168.10.10
 
 .PARAMETER DomainName
-    The AD domain FQDN. Default: azengineers.com
+    The AD domain FQDN. Default: domain.com
 
 .EXAMPLE
     .\05-pre-migration-check.ps1
@@ -31,7 +31,7 @@
 
 param(
     [string]$DCIP = "192.168.10.10",
-    [string]$DomainName = "azengineers.com",
+    [string]$DomainName = "domain.com",
     [int]$MinDriveSpaceGB = 250
 )
 

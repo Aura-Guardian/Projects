@@ -1,6 +1,6 @@
 # Lessons Learned / What Broke
 
-Every lab and real-world deployment teaches you something. This document captures the failures, surprises, and insights from actually building the `azengineers.com` domain and migrating end-user machines — including the real issues hit during this lab.
+Every lab and real-world deployment teaches you something. This document captures the failures, surprises, and insights from actually building the `domain.com` domain and migrating end-user machines — including the real issues hit during this lab.
 
 ---
 
@@ -36,15 +36,15 @@ New-NetIPAddress -InterfaceAlias "Ethernet0" -IPAddress 192.168.10.10 -PrefixLen
 
 ## 3. DNS Is the #1 Failure Point — Every Single Time
 
-**What happened:** After correctly setting the static IP on CLIENT01, `ping DC01.azengineers.com` failed with "Ping request could not find host." Meanwhile, `ping 192.168.10.10` worked perfectly — 4/4 replies, 0% loss.
+**What happened:** After correctly setting the static IP on CLIENT01, `ping DC01.domain.com` failed with "Ping request could not find host." Meanwhile, `ping 192.168.10.10` worked perfectly — 4/4 replies, 0% loss.
 
-**Root cause:** The DC's hostname in DNS was not `DC01` — it was the auto-generated Windows name `WIN-NN3FQETD1IB`. The server was never renamed before DC promotion, so it registered its default name in DNS. Running `nslookup DC01.azengineers.com` confirmed the error: "Non-existent domain."
+**Root cause:** The DC's hostname in DNS was not `DC01` — it was the auto-generated Windows name `WIN-NN3FQETD1IB`. The server was never renamed before DC promotion, so it registered its default name in DNS. Running `nslookup DC01.domain.com` confirmed the error: "Non-existent domain."
 
 **Fix (two options):**
 1. Rename the DC to the intended name before or after promotion: `Rename-Computer -NewName "DC01" -Restart`
-2. Use the actual hostname (`WIN-NN3FQETD1IB.azengineers.com`) everywhere going forward
+2. Use the actual hostname (`WIN-NN3FQETD1IB.domain.com`) everywhere going forward
 
-The rename was the cleaner fix for the portfolio. After renaming and rebooting, `ipconfig /flushdns` on the client followed by `ping DC01.azengineers.com` resolved correctly.
+The rename was the cleaner fix for the portfolio. After renaming and rebooting, `ipconfig /flushdns` on the client followed by `ping DC01.domain.com` resolved correctly.
 
 **Lesson:** Rename the server to its intended name (DC01, DC-PROD-01, etc.) **before** running dcpromo. Once you promote a DC, renaming it requires extra steps. The hostname is what gets registered in DNS — if it's wrong, every subsequent step that references the DC by name will fail.
 
@@ -149,23 +149,23 @@ The rename was the cleaner fix for the portfolio. After renaming and rebooting, 
 
 ## 12. Domain Join Puts the Computer in the Default "Computers" Container
 
-**What happened:** After joining CLIENT01 to the domain via the GUI, the computer object appeared in `CN=Computers,DC=azengineers,DC=com` — the default container — instead of the intended `OU=Computers,OU=Engineering` OU.
+**What happened:** After joining CLIENT01 to the domain via the GUI, the computer object appeared in `CN=Computers,DC=domain,DC=com` — the default container — instead of the intended `OU=Computers,OU=Engineering` OU.
 
 **Root cause:** The GUI domain join doesn't let you specify a target OU. It always drops the computer into the default Computers container.
 
 **Fix:** Either use `Add-Computer -OUPath` in PowerShell (which lets you specify the OU at join time) or use `redircmp` to redirect the default computer container:
 
 ```powershell
-redircmp "OU=Computers,OU=Engineering,DC=azengineers,DC=com"
+redircmp "OU=Computers,OU=Engineering,DC=domain,DC=com"
 ```
 
 Or just move the computer object after joining:
 
 ```powershell
-Get-ADComputer "CLIENT01" | Move-ADObject -TargetPath "OU=Computers,OU=Engineering,DC=azengineers,DC=com"
+Get-ADComputer "CLIENT01" | Move-ADObject -TargetPath "OU=Computers,OU=Engineering,DC=domain,DC=com"
 ```
 
-**Lesson:** If you're joining machines one by one via the GUI (as in the azengineers.com migration), plan to move the computer objects to the correct OUs afterward, or use the PowerShell method from the start.
+**Lesson:** If you're joining machines one by one via the GUI (as in the domain.com migration), plan to move the computer objects to the correct OUs afterward, or use the PowerShell method from the start.
 
 ---
 
@@ -193,7 +193,7 @@ Get-ADComputer "CLIENT01" | Move-ADObject -TargetPath "OU=Computers,OU=Engineeri
 Add-DnsServerForwarder -IPAddress 8.8.8.8
 ```
 
-This tells the DC: "If you can't resolve a name from your own zones, ask 8.8.8.8." Now the client can resolve both `azengineers.com` (internal) and `outlook.office365.com` (external).
+This tells the DC: "If you can't resolve a name from your own zones, ask 8.8.8.8." Now the client can resolve both `domain.com` (internal) and `outlook.office365.com` (external).
 
 **Lesson:** An AD-integrated DNS server that doesn't have forwarders is a walled garden. Your domain will work, but anything requiring external resolution (Windows Update, M365, web browsing) will break. Always configure forwarders.
 

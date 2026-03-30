@@ -22,7 +22,7 @@ This installs the AD DS binaries and the RSAT tools (Active Directory Users and 
 Import-Module ADDSDeployment
 
 Install-ADDSForest `
-    -DomainName "azengineers.com" `
+    -DomainName "domain.com" `
     -DomainNetbiosName "AZENGINEERS" `
     -ForestMode "WinThreshold" `
     -DomainMode "WinThreshold" `
@@ -41,8 +41,8 @@ The server will reboot automatically. After reboot, you'll log in as `AZENGINEER
 - `NTDS.dit` — the AD database — was created at `C:\Windows\NTDS\ntds.dit`. This is the single file that holds every object in the directory (users, groups, OUs, GPOs, schema).
 - `edb.log` / `edb.chk` — transaction log and checkpoint file, same directory. These provide crash recovery (write-ahead logging, like a database WAL).
 - `SYSVOL` (`C:\Windows\SYSVOL`) — replicated folder that stores Group Policy templates and logon scripts. Every DC in the domain gets a copy.
-- `NETLOGON` (`C:\Windows\SYSVOL\sysvol\azengineers.com\SCRIPTS`) — network share used for legacy logon scripts. Clients look for `\\azengineers.com\NETLOGON` automatically during logon.
-- DNS was installed and an AD-integrated forward lookup zone `azengineers.com` was auto-created.
+- `NETLOGON` (`C:\Windows\SYSVOL\sysvol\domain.com\SCRIPTS`) — network share used for legacy logon scripts. Clients look for `\\domain.com\NETLOGON` automatically during logon.
+- DNS was installed and an AD-integrated forward lookup zone `domain.com` was auto-created.
 
 ### Step 1.3: Configure DNS Zones
 
@@ -64,7 +64,7 @@ Add a PTR record for the DC:
 Add-DnsServerResourceRecordPtr `
     -ZoneName "10.168.192.in-addr.arpa" `
     -Name "10" `
-    -PtrDomainName "DC01.azengineers.com"
+    -PtrDomainName "DC01.domain.com"
 ```
 
 ### Step 1.4: Verify DC Health
@@ -97,14 +97,14 @@ All of Phase 2 is done through the GUI using **Active Directory Users and Comput
 
 1. On DC01, open **Server Manager**.
 2. Click **Tools** (top-right menu bar) → **Active Directory Users and Computers**.
-3. In the left pane, you should see **azengineers.com** listed as your domain root. Expand it — you'll see the default containers (Builtin, Computers, Domain Controllers, Users, etc.).
+3. In the left pane, you should see **domain.com** listed as your domain root. Expand it — you'll see the default containers (Builtin, Computers, Domain Controllers, Users, etc.).
 
 ### Step 2.2: Design the OU Structure
 
 Before creating anything, here is the OU hierarchy you're going to build. Understanding the "why" matters more than the clicks:
 
 ```
-azengineers.com (domain root)
+domain.com (domain root)
 ├── _Admin
 │   ├── Tier 0 - Domain Admins    ← domain-level admin accounts
 │   ├── Tier 1 - Server Admins    ← server/app-level admin accounts
@@ -135,13 +135,13 @@ azengineers.com (domain root)
 
 ### Step 2.3: Create the Top-Level OUs
 
-1. In ADUC, **right-click** `azengineers.com` in the left pane.
+1. In ADUC, **right-click** `domain.com` in the left pane.
 2. Select **New** → **Organizational Unit**.
 3. In the Name field, type: `_Admin`
 4. Make sure **"Protect container from accidental deletion"** is checked.
 5. Click **OK**.
 
-Repeat this for each top-level OU (right-click `azengineers.com` → New → Organizational Unit each time):
+Repeat this for each top-level OU (right-click `domain.com` → New → Organizational Unit each time):
 
 | OU Name | Purpose |
 |---|---|
@@ -153,13 +153,13 @@ Repeat this for each top-level OU (right-click `azengineers.com` → New → Org
 | `HR` | HR department users and computers |
 | `_Disabled` | Holding pen for offboarded users / decommissioned machines |
 
-After creating all seven, your ADUC left pane should show them listed under `azengineers.com`.
+After creating all seven, your ADUC left pane should show them listed under `domain.com`.
 
 ### Step 2.4: Create the Sub-OUs
 
 **Under `_Admin`:**
 
-1. In ADUC, **expand** `azengineers.com` so you can see `_Admin`.
+1. In ADUC, **expand** `domain.com` so you can see `_Admin`.
 2. **Right-click** `_Admin` → **New** → **Organizational Unit**.
 3. Name: `Tier 0 - Domain Admins` → check "Protect container" → **OK**.
 4. Right-click `_Admin` again → **New** → **Organizational Unit**.
@@ -300,7 +300,7 @@ You should see an `Access is denied` error. This proves that Alice can reset pas
 
 ---
 
-## Phase 3 — End-User Machine Migration (azengineers.com)
+## Phase 3 — End-User Machine Migration (domain.com)
 
 This phase simulates the real production migration at AZ Engineers — each machine is migrated individually. Most of the work is done through the GUI and Windows Explorer. PowerShell is only used for the pre-migration connectivity checks.
 
@@ -321,14 +321,14 @@ ping 192.168.10.10
 
 ```powershell
 # 3. Ping the DC by hostname (proves DNS resolution works)
-ping DC01.azengineers.com
-# ping WIN-NN3FQETD1IB.azengineers.com
+ping DC01.domain.com
+# ping WIN-NN3FQETD1IB.domain.com
 ```
 
 ```powershell
 # 4. Verify domain SRV records exist in DNS
-nslookup -type=srv _ldap._tcp.dc._msdcs.azengineers.com
-# Should return DC01.azengineers.com
+nslookup -type=srv _ldap._tcp.dc._msdcs.domain.com
+# Should return DC01.domain.com
 ```
 
 ```powershell
@@ -359,12 +359,12 @@ Get-ChildItem -Path C:\ -Filter *.pst -Recurse -ErrorAction SilentlyContinue | S
 1. Right-click the **Start button** → **System** (or open **Settings → System → About**).
 2. Scroll down and click **"Rename this PC (advanced)"** (under "Related settings" on the right side).
 3. In the System Properties window, click the **"Change..."** button next to "To rename this computer or change its domain or workgroup..."
-4. Under "Member of", select **Domain** and type: `azengineers.com`
+4. Under "Member of", select **Domain** and type: `domain.com`
 5. Click **OK**.
 6. A credentials prompt will appear. Enter:
    - Username: `AZENGINEERS\svc.domainjoin` (or `AZENGINEERS\Administrator`)
    - Password: the password you set for that account
-7. You should see a popup: **"Welcome to the azengineers.com domain."**
+7. You should see a popup: **"Welcome to the domain.com domain."**
 8. Click **OK** → click **OK** again → click **Restart Now**.
 
 The machine will reboot. After restart, at the login screen, click **"Other user"** and sign in with the user's domain account (e.g., `AZENGINEERS\bob.engineer` with the password you set).
@@ -404,7 +404,7 @@ The user can now access all their migrated files from the desktop shortcut.
 
 1. Open **Outlook** from the Start menu on the new domain profile.
 2. Outlook will launch a setup wizard and prompt you to add an account.
-3. Enter the user's email address (e.g., `bob.engineer@azengineers.com`).
+3. Enter the user's email address (e.g., `bob.engineer@domain.com`).
 4. Click **Connect**. Autodiscover will locate the Microsoft 365 / Exchange mailbox and configure it automatically.
 5. Follow the prompts to finish setup.
 
@@ -425,7 +425,7 @@ The user can now access all their migrated files from the desktop shortcut.
 **On CLIENT01 — verify domain membership (GUI):**
 
 1. Right-click **Start** → **System**.
-2. Scroll down — under "Domain", it should say `azengineers.com`.
+2. Scroll down — under "Domain", it should say `domain.com`.
 
 **On CLIENT01 — verify migrated files:**
 

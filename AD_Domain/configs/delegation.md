@@ -1,6 +1,6 @@
 # Delegation of Control — Settings Reference
 
-This document records the exact delegation settings applied in the `azengineers.com` domain, so they can be audited, replicated, or rolled back.
+This document records the exact delegation settings applied in the `domain.com` domain, so they can be audited, replicated, or rolled back.
 
 ---
 
@@ -11,7 +11,7 @@ This document records the exact delegation settings applied in the `azengineers.
 | Group Name | SG-Helpdesk |
 | Group Scope | Global |
 | Group Category | Security |
-| Group Location | OU=Tier 2 - Helpdesk, OU=_Admin, DC=azengineers, DC=com |
+| Group Location | OU=Tier 2 - Helpdesk, OU=_Admin, DC=domain, DC=com |
 
 ---
 
@@ -31,10 +31,10 @@ The delegation is applied to the `Users` sub-OU inside each department:
 
 | OU Distinguished Name |
 |---|
-| OU=Users, OU=Engineering, DC=azengineers, DC=com |
-| OU=Users, OU=Operations, DC=azengineers, DC=com |
-| OU=Users, OU=Finance, DC=azengineers, DC=com |
-| OU=Users, OU=HR, DC=azengineers, DC=com |
+| OU=Users, OU=Engineering, DC=domain, DC=com |
+| OU=Users, OU=Operations, DC=domain, DC=com |
+| OU=Users, OU=Finance, DC=domain, DC=com |
+| OU=Users, OU=HR, DC=domain, DC=com |
 
 ---
 
@@ -59,7 +59,7 @@ The delegation is applied to the `Users` sub-OU inside each department:
 To view the current ACL on a target OU:
 
 ```powershell
-$ouPath = "OU=Users,OU=Engineering,DC=azengineers,DC=com"
+$ouPath = "OU=Users,OU=Engineering,DC=domain,DC=com"
 (Get-Acl "AD:\$ouPath").Access |
     Where-Object { $_.IdentityReference -like "*SG-Helpdesk*" } |
     Format-List
@@ -82,7 +82,7 @@ Set-ADAccountPassword -Identity "Administrator" -Reset -NewPassword (Read-Host -
 
 ```powershell
 $helpdesk = Get-ADGroup "SG-Helpdesk"
-$ouPath = "OU=Users,OU=Engineering,DC=azengineers,DC=com"
+$ouPath = "OU=Users,OU=Engineering,DC=domain,DC=com"
 $acl = Get-Acl "AD:\$ouPath"
 
 # Find and remove the matching ACE

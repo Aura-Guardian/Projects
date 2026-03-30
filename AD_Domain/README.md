@@ -1,6 +1,6 @@
-# Active Directory Domain Build, Delegation & End-User Migration (azengineers.com)
+# Active Directory Domain Build, Delegation & End-User Migration (domain.com)
 
-A full Active Directory deployment — from promoting a bare Windows Server to a Domain Controller, through OU/delegation design, to migrating production end-user machines onto the `azengineers.com` domain — documented as a single, end-to-end project.
+A full Active Directory deployment — from promoting a bare Windows Server to a Domain Controller, through OU/delegation design, to migrating production end-user machines onto the `domain.com` domain — documented as a single, end-to-end project.
 
 ---
 
@@ -20,7 +20,7 @@ Demonstrate the ability to stand up an enterprise Active Directory environment f
 |---|---|
 | Domain Controller | Windows Server 2022 (VM) |
 | Client Machine | Windows 10 Pro/Enterprise (VM) |
-| Domain Name | `azengineers.com` |
+| Domain Name | `domain.com` |
 | Forest / Domain Functional Level | Windows Server 2016 (minimum) |
 | DNS | AD-integrated DNS on the DC |
 | Mail | Microsoft 365 / Exchange Online (Outlook client) |
@@ -52,13 +52,13 @@ Demonstrate the ability to stand up an enterprise Active Directory environment f
 
 ```
 ┌─────────────────────────────────────────────────────────────────┐
-│                     azengineers.com Forest                      │
+│                     domain.com Forest                      │
 │                                                                 │
 │   ┌───────────────────────┐       ┌──────────────────────────┐  │
 │   │  DC01 (Win Server 2022)│       │  CLIENT01 (Windows 10)   │  │
 │   │  ─────────────────────│       │  ────────────────────────│  │
 │   │  Roles:               │       │  Domain-joined to        │  │
-│   │   • AD DS             │◄─────►│   azengineers.com        │  │
+│   │   • AD DS             │◄─────►│   domain.com        │  │
 │   │   • DNS Server        │ DNS/  │  Local profile migrated  │  │
 │   │   • SYSVOL / NETLOGON │ LDAP  │   to domain profile      │  │
 │   │                       │       │  Outlook configured for  │  │
@@ -70,7 +70,7 @@ Demonstrate the ability to stand up an enterprise Active Directory environment f
 │   └───────────────────────┘                                     │
 │                                                                 │
 │   OU Structure:                                                 │
-│   azengineers.com                                               │
+│   domain.com                                               │
 │    ├─ _Admin                                                    │
 │    │   ├─ Tier 0 – Domain Admins                                │
 │    │   ├─ Tier 1 – Server Admins                                │
@@ -116,7 +116,7 @@ ad-domain-build-and-migration/
 
 ## Outcome / Findings
 
-- A fully functional `azengineers.com` single-domain forest was deployed, with DNS integrated into AD.
+- A fully functional `domain.com` single-domain forest was deployed, with DNS integrated into AD.
 - SYSVOL and NETLOGON shares replicated correctly; `dcdiag /v` and `repadmin /replsummary` returned zero errors.
 - A tiered OU structure enforced least-privilege: Helpdesk staff could reset passwords in departmental OUs without possessing Domain Admin rights.
 - Windows 10 client machines were joined to the domain after verifying DNS pointed to the DC (not a public resolver) — the single most common failure point.

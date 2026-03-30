@@ -2,12 +2,12 @@
 <#
 .SYNOPSIS
     Installs the AD DS role and promotes this server to the first Domain Controller
-    in the azengineers.com forest.
+    in the domain.com forest.
 
 .DESCRIPTION
     This script performs two actions:
       1. Installs the Active Directory Domain Services role and management tools.
-      2. Promotes the server to a DC by creating a new forest (azengineers.com).
+      2. Promotes the server to a DC by creating a new forest (domain.com).
 
     After promotion, the server reboots automatically. On next login you will
     sign in as AZENGINEERS\Administrator.
@@ -18,10 +18,10 @@
       - edb.chk        → Checkpoint file tracking flushed transactions
       - SYSVOL          → Replicated share for Group Policy & logon scripts
       - NETLOGON        → Legacy logon script share (subfolder of SYSVOL)
-      - DNS zone        → AD-integrated forward lookup zone: azengineers.com
+      - DNS zone        → AD-integrated forward lookup zone: domain.com
 
 .PARAMETER DomainName
-    The FQDN for the new AD domain. Default: azengineers.com
+    The FQDN for the new AD domain. Default: domain.com
 
 .EXAMPLE
     .\01-install-adds.ps1
@@ -34,7 +34,7 @@
 #>
 
 param(
-    [string]$DomainName = "azengineers.com",
+    [string]$DomainName = "domain.com",
     [string]$NetbiosName = "AZENGINEERS"
 )
 

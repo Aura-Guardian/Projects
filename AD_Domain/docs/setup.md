@@ -129,10 +129,10 @@ Run through this on both VMs before proceeding to the walkthrough:
 |---|---|---|
 | Local Admin (DC01) | Initial server setup | During OS install |
 | DSRM Password | Directory Services Restore Mode | During DC promotion |
-| azengineers\Administrator | Domain Admin (auto-created) | After DC promotion |
-| azengineers\svc.domainjoin | Delegated account for joining machines | Script 03 / 04 |
-| azengineers\helpdesk.user | Helpdesk operator (password reset only) | Script 03 / 04 |
-| azengineers\[end-user] | Migrated user accounts | Script 03 |
+| domain\Administrator | Domain Admin (auto-created) | After DC promotion |
+| domain\svc.domainjoin | Delegated account for joining machines | Script 03 / 04 |
+| domain\helpdesk.user | Helpdesk operator (password reset only) | Script 03 / 04 |
+| domain\[end-user] | Migrated user accounts | Script 03 |
 
 ---
 

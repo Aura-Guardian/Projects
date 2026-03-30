@@ -1,7 +1,7 @@
 #Requires -Modules ActiveDirectory
 <#
 .SYNOPSIS
-    Creates the full OU hierarchy for azengineers.com.
+    Creates the full OU hierarchy for domain.com.
 
 .DESCRIPTION
     Builds a department-based OU structure with a tiered admin model:

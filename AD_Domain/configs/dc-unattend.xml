@@ -10,7 +10,7 @@
     Install-ADDSForest -CreateDnsDelegation:$false `
         -DatabasePath "C:\Windows\NTDS" `
         -DomainMode "WinThreshold" `
-        -DomainName "azengineers.com" `
+        -DomainName "domain.com" `
         -DomainNetbiosName "AZENGINEERS" `
         -ForestMode "WinThreshold" `
         -InstallDns:$true `
@@ -35,7 +35,7 @@
   reference if you prefer the GUI workflow and want to replicate it.
 -->
 <DCPromoSettings>
-  <DomainName>azengineers.com</DomainName>
+  <DomainName>domain.com</DomainName>
   <DomainNetbiosName>AZENGINEERS</DomainNetbiosName>
   <ForestFunctionalLevel>WinThreshold</ForestFunctionalLevel>
   <DomainFunctionalLevel>WinThreshold</DomainFunctionalLevel>

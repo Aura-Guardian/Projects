@@ -1,6 +1,6 @@
 <#
 .SYNOPSIS
-    Joins the current machine to the azengineers.com domain.
+    Joins the current machine to the domain.com domain.
 
 .DESCRIPTION
     Prompts for domain join credentials (use svc.domainjoin or another delegated
@@ -11,7 +11,7 @@
     do NOT run this script.
 
 .PARAMETER DomainName
-    The AD domain to join. Default: azengineers.com
+    The AD domain to join. Default: domain.com
 
 .PARAMETER TargetOU
     The OU to place the computer object in. Default: Computers OU under Engineering.
@@ -19,7 +19,7 @@
 
 .EXAMPLE
     .\06-domain-join.ps1
-    .\06-domain-join.ps1 -TargetOU "OU=Computers,OU=Finance,DC=azengineers,DC=com"
+    .\06-domain-join.ps1 -TargetOU "OU=Computers,OU=Finance,DC=domain,DC=com"
 
 .NOTES
     Run on: End-user machine (CLIENT01, etc.)
@@ -28,8 +28,8 @@
 #>
 
 param(
-    [string]$DomainName = "azengineers.com",
-    [string]$TargetOU = "OU=Computers,OU=Engineering,DC=azengineers,DC=com"
+    [string]$DomainName = "domain.com",
+    [string]$TargetOU = "OU=Computers,OU=Engineering,DC=domain,DC=com"
 )
 
 Write-Host "═══════════════════════════════════════════════════" -ForegroundColor Cyan
@@ -46,7 +46,7 @@ if ($confirm -ne "yes") {
 }
 
 # Prompt for credentials
-Write-Host "`nEnter domain join credentials (e.g., azengineers\svc.domainjoin):" -ForegroundColor White
+Write-Host "`nEnter domain join credentials (e.g., domain\svc.domainjoin):" -ForegroundColor White
 $cred = Get-Credential
 
 # Join the domain

@@ -1,10 +1,10 @@
 #Requires -Modules DnsServer
 <#
 .SYNOPSIS
-    Creates the DNS zones needed for the azengineers.com AD environment.
+    Creates the DNS zones needed for the domain.com AD environment.
 
 .DESCRIPTION
-    After DC promotion, a forward lookup zone (azengineers.com) is auto-created.
+    After DC promotion, a forward lookup zone (domain.com) is auto-created.
     This script adds the reverse lookup zone and key records that are NOT
     created automatically.
 
@@ -17,11 +17,11 @@
 #>
 
 # --- Verify the forward lookup zone exists (it should after dcpromo) ---
-$fwdZone = Get-DnsServerZone -Name "azengineers.com" -ErrorAction SilentlyContinue
+$fwdZone = Get-DnsServerZone -Name "domain.com" -ErrorAction SilentlyContinue
 if ($fwdZone) {
-    Write-Host "[OK] Forward lookup zone 'azengineers.com' exists." -ForegroundColor Green
+    Write-Host "[OK] Forward lookup zone 'domain.com' exists." -ForegroundColor Green
 } else {
-    Write-Host "[!!] Forward lookup zone 'azengineers.com' NOT found. Was dcpromo successful?" -ForegroundColor Red
+    Write-Host "[!!] Forward lookup zone 'domain.com' NOT found. Was dcpromo successful?" -ForegroundColor Red
     exit 1
 }
 
@@ -39,7 +39,7 @@ if (-not $existingRev) {
 Add-DnsServerResourceRecordPtr `
     -ZoneName $revZoneName `
     -Name "10" `
-    -PtrDomainName "DC01.azengineers.com" `
+    -PtrDomainName "DC01.domain.com" `
     -ErrorAction SilentlyContinue
 Write-Host "[OK] PTR record for DC01 (192.168.10.10) added." -ForegroundColor Green
 

@@ -52,13 +52,13 @@ Demonstrate the ability to stand up an enterprise Active Directory environment f
 
 ```
 ┌─────────────────────────────────────────────────────────────────┐
-│                     domain.com Forest                      │
+│                     domain.com Forest                           │
 │                                                                 │
 │   ┌───────────────────────┐       ┌──────────────────────────┐  │
-│   │  DC01 (Win Server 2022)│       │  CLIENT01 (Windows 10)   │  │
+│   │ DC01 (Win Server 2022)│       │  CLIENT01 (Windows 10)   │  │
 │   │  ─────────────────────│       │  ────────────────────────│  │
 │   │  Roles:               │       │  Domain-joined to        │  │
-│   │   • AD DS             │◄─────►│   domain.com        │  │
+│   │   • AD DS             │◄─────►│   domain.com             │  │
 │   │   • DNS Server        │ DNS/  │  Local profile migrated  │  │
 │   │   • SYSVOL / NETLOGON │ LDAP  │   to domain profile      │  │
 │   │                       │       │  Outlook configured for  │  │
@@ -70,7 +70,7 @@ Demonstrate the ability to stand up an enterprise Active Directory environment f
 │   └───────────────────────┘                                     │
 │                                                                 │
 │   OU Structure:                                                 │
-│   domain.com                                               │
+│   domain.com                                                    │
 │    ├─ _Admin                                                    │
 │    │   ├─ Tier 0 – Domain Admins                                │
 │    │   ├─ Tier 1 – Server Admins                                │

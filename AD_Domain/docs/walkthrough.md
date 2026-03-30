@@ -23,7 +23,7 @@ Import-Module ADDSDeployment
 
 Install-ADDSForest `
     -DomainName "domain.com" `
-    -DomainNetbiosName "AZENGINEERS" `
+    -DomainNetbiosName "DOMAIN" `
     -ForestMode "WinThreshold" `
     -DomainMode "WinThreshold" `
     -InstallDns:$true `
@@ -34,7 +34,7 @@ Install-ADDSForest `
     -Force:$true
 ```
 
-The server will reboot automatically. After reboot, you'll log in as `AZENGINEERS\Administrator`.
+The server will reboot automatically. After reboot, you'll log in as `DOMAIN\Administrator`.
 
 **What just happened under the hood:**
 
@@ -279,7 +279,7 @@ This is the core least-privilege concept. Instead of making helpdesk staff Domai
 
 This is the one step where you need PowerShell — to prove the delegation actually works by testing it from the delegated account.
 
-Log in to DC01 as `AZENGINEERS\alice.helpdesk` (or open a PowerShell window as that user). Then run:
+Log in to DC01 as `DOMAIN\alice.helpdesk` (or open a PowerShell window as that user). Then run:
 
 ```powershell
 # This should SUCCEED (alice.helpdesk has delegated password-reset rights on Engineering)
@@ -302,7 +302,7 @@ You should see an `Access is denied` error. This proves that Alice can reset pas
 
 ## Phase 3 — End-User Machine Migration (domain.com)
 
-This phase simulates the real production migration at AZ Engineers — each machine is migrated individually. Most of the work is done through the GUI and Windows Explorer. PowerShell is only used for the pre-migration connectivity checks.
+This phase simulates the real production migration at DOMAINs — each machine is migrated individually. Most of the work is done through the GUI and Windows Explorer. PowerShell is only used for the pre-migration connectivity checks.
 
 ### Step 3.1: Pre-Migration Check (PowerShell Required — Run on CLIENT01)
 
@@ -322,7 +322,6 @@ ping 192.168.10.10
 ```powershell
 # 3. Ping the DC by hostname (proves DNS resolution works)
 ping DC01.domain.com
-# ping WIN-NN3FQETD1IB.domain.com
 ```
 
 ```powershell
@@ -362,12 +361,12 @@ Get-ChildItem -Path C:\ -Filter *.pst -Recurse -ErrorAction SilentlyContinue | S
 4. Under "Member of", select **Domain** and type: `domain.com`
 5. Click **OK**.
 6. A credentials prompt will appear. Enter:
-   - Username: `AZENGINEERS\svc.domainjoin` (or `AZENGINEERS\Administrator`)
+   - Username: `DOMAIN\svc.domainjoin` (or `DOMAIN\Administrator`)
    - Password: the password you set for that account
 7. You should see a popup: **"Welcome to the domain.com domain."**
 8. Click **OK** → click **OK** again → click **Restart Now**.
 
-The machine will reboot. After restart, at the login screen, click **"Other user"** and sign in with the user's domain account (e.g., `AZENGINEERS\bob.engineer` with the password you set).
+The machine will reboot. After restart, at the login screen, click **"Other user"** and sign in with the user's domain account (e.g., `DOMAIN\bob.engineer` with the password you set).
 
 > **Note:** The GUI domain join places the computer object in the default `Computers` container. After joining, go to DC01 → open ADUC → find the computer in the `Computers` container → right-click it → **Move...** → select the correct department Computers OU (e.g., `Engineering → Computers`).
 

@@ -17,7 +17,7 @@
 
 .NOTES
     Run on: DC01 (after promotion and reboot)
-    Run as: AZENGINEERS\Administrator
+    Run as: DOMAIN\Administrator
 #>
 
 $domainDN = (Get-ADDomain).DistinguishedName

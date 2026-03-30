@@ -4,14 +4,14 @@
   ================================================
   This file can be used with Install-ADDSForest to automate DC promotion.
   It mirrors the settings used in the walkthrough.
-
+  
   USAGE:
     Import-Module ADDSDeployment
     Install-ADDSForest -CreateDnsDelegation:$false `
         -DatabasePath "C:\Windows\NTDS" `
         -DomainMode "WinThreshold" `
         -DomainName "domain.com" `
-        -DomainNetbiosName "AZENGINEERS" `
+        -DomainNetbiosName "DOMAIN" `
         -ForestMode "WinThreshold" `
         -InstallDns:$true `
         -LogPath "C:\Windows\NTDS" `
@@ -36,7 +36,7 @@
 -->
 <DCPromoSettings>
   <DomainName>domain.com</DomainName>
-  <DomainNetbiosName>AZENGINEERS</DomainNetbiosName>
+  <DomainNetbiosName>DOMAIN</DomainNetbiosName>
   <ForestFunctionalLevel>WinThreshold</ForestFunctionalLevel>
   <DomainFunctionalLevel>WinThreshold</DomainFunctionalLevel>
   <InstallDNS>true</InstallDNS>

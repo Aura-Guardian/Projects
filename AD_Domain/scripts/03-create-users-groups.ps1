@@ -18,7 +18,7 @@
 
 .NOTES
     Run on: DC01
-    Run as: AZENGINEERS\Administrator
+    Run as: DOMAIN\Administrator
     Prerequisite: 02-create-ous.ps1 must have run first
 #>
 

@@ -22,7 +22,7 @@
 
 .NOTES
     Run on: DC01 (or any Domain Controller)
-    Run as: AZENGINEERS\Administrator (or Domain Admin equivalent)
+    Run as: DOMAIN\Administrator (or Domain Admin equivalent)
 #>
 
 $domainDN = (Get-ADDomain).DistinguishedName

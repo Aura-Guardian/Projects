@@ -54,9 +54,9 @@ The rename was the cleaner fix for the portfolio. After renaming and rebooting, 
 
 **What happened:** After DC promotion and the automatic reboot, the DSRM password set in the `Install-ADDSForest` command was not accepted at the login screen.
 
-**Root cause:** The DSRM password and the domain Administrator password are completely separate. `Install-ADDSForest` only sets the DSRM password — the offline recovery credential used when booting into Directory Services Restore Mode. The domain `AZENGINEERS\Administrator` account password is inherited from whatever the local Administrator password was before promotion.
+**Root cause:** The DSRM password and the domain Administrator password are completely separate. `Install-ADDSForest` only sets the DSRM password — the offline recovery credential used when booting into Directory Services Restore Mode. The domain `DOMAIN\Administrator` account password is inherited from whatever the local Administrator password was before promotion.
 
-**Fix:** Log in with `AZENGINEERS\Administrator` using the **local Administrator password** that was set during the original Windows Server installation — not the DSRM password. If forgotten, the domain Administrator password can be reset via `Set-ADAccountPassword` once logged in through other means.
+**Fix:** Log in with `DOMAIN\Administrator` using the **local Administrator password** that was set during the original Windows Server installation — not the DSRM password. If forgotten, the domain Administrator password can be reset via `Set-ADAccountPassword` once logged in through other means.
 
 **Lesson:** Write down two separate passwords at promotion time: the DSRM password (break-glass, rarely needed) and the local/domain Administrator password (used for every normal login). Confusing them will lock you out immediately after your first reboot as a DC.
 

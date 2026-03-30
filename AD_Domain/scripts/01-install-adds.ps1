@@ -10,7 +10,7 @@
       2. Promotes the server to a DC by creating a new forest (domain.com).
 
     After promotion, the server reboots automatically. On next login you will
-    sign in as AZENGINEERS\Administrator.
+    sign in as DOMAIN\Administrator.
 
     WHAT GETS CREATED:
       - NTDS.dit       → The AD database (C:\Windows\NTDS\ntds.dit)
@@ -35,7 +35,7 @@
 
 param(
     [string]$DomainName = "domain.com",
-    [string]$NetbiosName = "AZENGINEERS"
+    [string]$NetbiosName = "DOMAIN"
 )
 
 # ── Step 1: Install the AD DS role ──────────────────────────────────────────
